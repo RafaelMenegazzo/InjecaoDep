@@ -1,0 +1,16 @@
+package bo;
+
+import dao.ProfessorDAO;
+
+public class Professor_BO {
+	
+	public boolean inserir(Professor professor) {
+		if(existe(professor) != true) {
+			ProfessorDAO professorDAO = new ProfessorDAO();
+			return professorDAO.inserir(professor);
+		}
+		
+		return false;
+	}
+
+}

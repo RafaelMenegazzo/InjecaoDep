@@ -1,0 +1,175 @@
+package dao;
+import dto.Professor;
+import conexao.Conexao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProfessorDAO {
+	
+	final String NOMETABELA = "Professor";
+	
+	
+	public boolean excluir(Professor professor) {
+	    try {
+	        Connection conn = Conexao.conectar();
+	        String sql = "DELETE FROM Professor WHERE id_professor = ?;";
+	        PreparedStatement ps = conn.prepareStatement(sql);
+	        ps.setInt(1, professor.getId_professor());
+	        ps.executeUpdate();
+	        ps.close();
+	        conn.close();
+	        return true;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	
+	public boolean inserir(Professor professor) {
+		try {
+			
+			Connection conn = Conexao.conectar();
+			String sql = "INSERT INTO " + NOMETABELA + "(nome_professor, codigo_professor) VALUE(?, ?)";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, professor.getNome_professor());
+			ps.setString(2, professor.getCodigo_professor());
+			ps.executeUpdate();
+			
+			ps.close();
+			conn.close();
+			return true;
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean existe(Professor professor) {
+		try {
+			Connection conn = Conexao.conectar();
+			String sql = "SELECT * FROM " + NOMETABELA + " WHERE nome_professor = ? AND codigo_professor = ?;";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, professor.getNome_professor());
+			ps.setString(2, professor.getCodigo_professor());
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				ps.close();
+				rs.close();
+				conn.close();
+				return true;
+			}
+			
+		} catch(Exception e){
+			
+			e.printStackTrace();
+			return false;
+			
+		}
+		return false;
+	}
+	
+	public boolean alterar(Professor professor) {
+		
+		try {
+			
+			Connection conn = Conexao.conectar();
+			String sql = "UPDATE " + NOMETABELA + " SET Nome_Professor=?, codigo_professor=? WHERE id_professor=?";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, professor.getNome_professor());
+			ps.setString(2, professor.getCodigo_professor());
+			
+			ps.executeUpdate();
+			conn.close();
+			return true;
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+	}
+	
+	public Professor procurarPorCodigo(Professor professor) {
+		try {
+			
+			Connection conn = Conexao.conectar();
+			String sql = "SELECT * FROM " + NOMETABELA + " WHERE id_professor = ?;";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setInt(1, professor.getId_professor());
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				Professor prof = new Professor();
+				
+				int id = rs.getInt("id_professor");
+				System.out.println("id_professor " + id);
+				
+				String nome = rs.getString("nome_professor");
+				System.out.println("nome_professor " + nome);
+				
+				String cod = rs.getString("cod_professor");
+				System.out.println("cod_professor " + cod);
+				
+				 ps.close();
+	             rs.close();
+	             conn.close();
+	             
+	             return prof;
+			} else {
+				 ps.close();
+	             rs.close();
+	             conn.close();
+	             return null;
+			}
+			
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public List<Professor> montarLista(ResultSet rs){
+		List<Professor> lista = new ArrayList<Professor>();
+		
+		try {
+			while(rs.next()) {
+				Professor prof = new Professor();
+				prof.setId_professor(rs.getInt(1));
+				prof.setNome_professor(rs.getString(2));
+				prof.setCodigo_professor(rs.getString(3));
+				
+				lista.add(prof);
+			}
+			
+			return lista;
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	
+	public List<Professor> pesquisarTodos(){
+		try {
+			
+			Connection conn = Conexao.conectar();
+			String sql = "SELEC * FROM " + NOMETABELA + ";";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery(sql);
+			List<Professor> lista = montarLista(rs);
+			return lista;
+			
+		} catch(Exception e){
+			e.printStackTrace();
+			return null;
+			
+		}
+	}
+	
+
+}

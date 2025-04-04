@@ -1,0 +1,101 @@
+package dao;
+
+import dto.Curso;
+import conexao.Conexao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CursoDAO {
+
+    final String NOMETABELA = "Curso";
+
+    public boolean inserir(Curso curso) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "INSERT INTO " + NOMETABELA + "(nome_curso) VALUES(?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, curso.getNome_curso());
+
+            ps.executeUpdate();
+            ps.close();
+            conn.close();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean existe(Curso curso) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "SELECT * FROM " + NOMETABELA + " WHERE nome_curso = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, curso.getNome_curso());
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                ps.close();
+                rs.close();
+                conn.close();
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
+    public boolean alterar(Curso curso) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "UPDATE " + NOMETABELA + " SET nome_curso=? WHERE id_curso=?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, curso.getNome_curso());
+            ps.setInt(2, curso.getId_curso());
+
+            ps.executeUpdate();
+            conn.close();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Curso procurarPorId(int idCurso) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "SELECT * FROM " + NOMETABELA + " WHERE id_curso = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, idCurso);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Curso cursoEncontrado = new Curso();
+                cursoEncontrado.setId_curso(rs.getInt("id_curso"));
+                cursoEncontrado.setNome_curso(rs.getString("nome_curso"));
+
+                ps.close();
+                rs.close();
+                conn.close();
+                return cursoEncontrado;
+            } else {
+                ps.close();
+                rs.close();
+                conn.close();
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}

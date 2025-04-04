@@ -1,0 +1,57 @@
+package dao;
+import dto.Professor;
+import conexao.Conexao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+public class ProfessorDAO {
+	
+	final String NOMETABELA = "Professor";
+	
+	
+	public boolean inserir(Professor professor) {
+		try {
+			
+			Connection conn = Conexao.conectar();
+			String sql = "INSERT INTO " + NOMETABELA + "(nome_professor, codigo_professor) VALUE(?, ?)";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, professor.getNome_professor());
+			ps.setString(2, professor.getCodigo_professor());
+			ps.executeUpdate();
+			
+			ps.close();
+			conn.close();
+			return true;
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean existe(Professor professor) {
+		try {
+			Connection conn = Conexao.conectar();
+			String sql = "SELECT * FROM " + NOMETABELA + " WHERE nome_professor = ? AND codigo_professor = ?;";
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, professor.getNome_professor());
+			ps.setString(2, professor.getCodigo_professor());
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()) {
+				ps.close();
+				rs.close();
+				conn.close();
+				return true;
+			}
+			
+		} catch(Exception e){
+			
+			e.printStackTrace();
+			return false;
+			
+		}
+		return false;
+	}
+
+}

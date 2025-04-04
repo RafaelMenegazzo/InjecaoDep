@@ -1,0 +1,120 @@
+package dao;
+
+import dto.Aluno;
+import org.w3c.dom.*;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AlunoXMLDAO {
+    private final File xmlFile = new File("alunos.xml");
+
+    private Document criarOuCarregarXML() {
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc;
+
+            if (!xmlFile.exists()) {
+                doc = builder.newDocument();
+                Element rootElement = doc.createElement("alunos");
+                doc.appendChild(rootElement);
+            } else {
+                doc = builder.parse(xmlFile);
+            }
+            return doc;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void salvarXML(Document doc) {
+        try {
+            Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            DOMSource domSource = new DOMSource(doc);
+            StreamResult streamResult = new StreamResult(xmlFile);
+            transformer.transform(domSource, streamResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inserir(Aluno aluno) {
+        Document doc = criarOuCarregarXML();
+        if (doc == null) return;
+
+        Element rootElement = doc.getDocumentElement();
+        Element alunoElement = doc.createElement("aluno");
+        rootElement.appendChild(alunoElement);
+
+        addElemento(doc, alunoElement, "codigo", aluno.getCod());
+        addElemento(doc, alunoElement, "nome", aluno.getNome());
+
+        salvarXML(doc);
+    }
+
+    public void excluir(String codigo) {
+        Document doc = criarOuCarregarXML();
+        if (doc == null) return;
+
+        Element root = doc.getDocumentElement();
+        NodeList alunos = root.getElementsByTagName("aluno");
+
+        for (int i = 0; i < alunos.getLength(); i++) {
+            Element alunoElement = (Element) alunos.item(i);
+            if (alunoElement.getElementsByTagName("codigo").item(0).getTextContent().equals(codigo)) {
+                root.removeChild(alunoElement);
+                salvarXML(doc);
+                return;
+            }
+        }
+    }
+
+    public Aluno buscar(String codigo) {
+        Document doc = criarOuCarregarXML();
+        if (doc == null) return null;
+
+        NodeList alunos = doc.getElementsByTagName("aluno");
+        for (int i = 0; i < alunos.getLength(); i++) {
+            Element alunoElement = (Element) alunos.item(i);
+            if (alunoElement.getElementsByTagName("codigo").item(0).getTextContent().equals(codigo)) {
+                return new Aluno(
+                        alunoElement.getElementsByTagName("codigo").item(0).getTextContent(),
+                        alunoElement.getElementsByTagName("nome").item(0).getTextContent()
+                );
+            }
+        }
+        return null;
+    }
+
+    public List<Aluno> listar() {
+        List<Aluno> lista = new ArrayList<>();
+        Document doc = criarOuCarregarXML();
+        if (doc == null) return lista;
+
+        NodeList alunos = doc.getElementsByTagName("aluno");
+        for (int i = 0; i < alunos.getLength(); i++) {
+            Element alunoElement = (Element) alunos.item(i);
+            Aluno aluno = new Aluno(
+                    alunoElement.getElementsByTagName("codigo").item(0).getTextContent(),
+                    alunoElement.getElementsByTagName("nome").item(0).getTextContent()
+            );
+            lista.add(aluno);
+        }
+        return lista;
+    }
+
+    private void addElemento(Document doc, Element parent, String tagName, String textContent) {
+        Element element = doc.createElement(tagName);
+        element.appendChild(doc.createTextNode(textContent));
+        parent.appendChild(element);
+    }
+}

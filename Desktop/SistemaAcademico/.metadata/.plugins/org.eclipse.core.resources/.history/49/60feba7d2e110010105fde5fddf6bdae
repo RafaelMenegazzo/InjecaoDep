@@ -1,0 +1,18 @@
+package formatos;
+
+impor
+import dto.Professor;
+import main.Interface;
+
+public class Sql implements Interface {
+
+	public void enviar() {
+		
+		
+			
+		
+		
+	}
+	
+
+}

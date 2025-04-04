@@ -1,0 +1,20 @@
+package main;
+
+import dto.Professor;
+import bo.Professor_BO;
+
+public class Main {
+
+	public static void main(String[] args) {
+	
+		Professor prof = new Professor("Rodrigo","1234");
+		Professor_BO profBO = new Professor_BO();
+		
+
+	
+		profBO.inserir(prof);
+
+
+	}
+
+}

@@ -1,0 +1,15 @@
+package XML;
+
+import VIEW.PaineisVIEW;
+import java.util.Scanner;
+
+public class EscolhaXML {
+	
+	Scanner entrada = new Scanner(System.in);
+	
+	
+	public void Escolha() {}
+	
+	
+
+}

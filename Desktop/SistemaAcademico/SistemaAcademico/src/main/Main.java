@@ -1,0 +1,27 @@
+package main;
+
+import dto.*;
+import JSON.JSON;
+import SQL.Sql;
+import XML.XML;
+import bo.*;
+
+public class Main {
+
+	public static void main(String[] args) {
+		
+		
+	
+		Interface i = new Sql(); 
+		Salvar s = new Salvar(i);
+		s.update();
+		
+		i = new JSON();
+		//s = new Salvar(i);
+		//s.update();
+	
+		i = new XML();
+		//s = new Salvar(i);
+		//s.update();
+	}
+}

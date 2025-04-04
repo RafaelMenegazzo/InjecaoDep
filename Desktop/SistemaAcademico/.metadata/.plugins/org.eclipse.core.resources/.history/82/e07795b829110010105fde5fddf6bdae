@@ -1,0 +1,12 @@
+package XML;
+
+import main.Interface;
+
+public class XML implements Interface {
+
+	public void enviar() {
+		System.out.print("XML FOI");
+		
+	}
+
+}

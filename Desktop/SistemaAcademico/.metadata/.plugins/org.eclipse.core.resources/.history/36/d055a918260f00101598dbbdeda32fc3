@@ -1,0 +1,5 @@
+package DTO;
+
+public class Registro_Aluno {
+
+}

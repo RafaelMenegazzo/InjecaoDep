@@ -1,0 +1,100 @@
+package XML;
+
+import dto.Aluno;
+import dto.Curso;
+import org.w3c.dom.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+public class AlunoXMLDAO {
+    private static final String FILE_PATH = "alunos.xml";
+
+    public boolean inserir(Aluno aluno) {
+        try {
+            File file = new File(FILE_PATH);
+            Document doc;
+            Element rootElement;
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+
+            if (file.exists()) {
+                doc = dBuilder.parse(file);
+                rootElement = doc.getDocumentElement();
+            } else {
+                doc = dBuilder.newDocument();
+                rootElement = doc.createElement("alunos");
+                doc.appendChild(rootElement);
+            }
+
+            Element alunoElement = doc.createElement("aluno");
+            rootElement.appendChild(alunoElement);
+
+            alunoElement.setAttribute("id", String.valueOf(aluno.getId_aluno()));
+
+            addElement(doc, alunoElement, "nome", aluno.getNome());
+            addElement(doc, alunoElement, "codigo", aluno.getCod());
+            addElement(doc, alunoElement, "curso", aluno.getCurso().getNome_curso());
+
+            salvarArquivo(doc);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Aluno> listarTodos() {
+        List<Aluno> alunos = new ArrayList<>();
+        try {
+            File file = new File(FILE_PATH);
+            if (!file.exists()) return alunos;
+
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(file);
+
+            NodeList nodeList = doc.getElementsByTagName("aluno");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Element alunoElement = (Element) nodeList.item(i);
+
+                Aluno aluno = new Aluno();
+                aluno.setId_aluno(Integer.parseInt(alunoElement.getAttribute("id")));
+                aluno.setNome(alunoElement.getElementsByTagName("nome").item(0).getTextContent());
+                aluno.setCod(alunoElement.getElementsByTagName("codigo").item(0).getTextContent());
+
+                Curso curso = new Curso();
+                curso.setNome_curso(alunoElement.getElementsByTagName("curso").item(0).getTextContent());
+                aluno.setCurso(curso);
+
+                alunos.add(aluno);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return alunos;
+    }
+
+    
+    private void addElement(Document doc, Element parent, String tagName, String textContent) {
+        Element element = doc.createElement(tagName);
+        element.appendChild(doc.createTextNode(textContent));
+        parent.appendChild(element);
+    }
+    
+    private void salvarArquivo(Document doc) throws TransformerException {
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        DOMSource domSource = new DOMSource(doc);
+        StreamResult streamResult = new StreamResult(new File(FILE_PATH));
+        transformer.transform(domSource, streamResult);
+    }
+}

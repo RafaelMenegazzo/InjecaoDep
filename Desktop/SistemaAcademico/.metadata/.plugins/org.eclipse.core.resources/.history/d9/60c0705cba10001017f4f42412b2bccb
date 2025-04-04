@@ -1,0 +1,8 @@
+package main;
+
+public interface Interface {
+	
+	public void Salvar();
+	public void update();
+
+}

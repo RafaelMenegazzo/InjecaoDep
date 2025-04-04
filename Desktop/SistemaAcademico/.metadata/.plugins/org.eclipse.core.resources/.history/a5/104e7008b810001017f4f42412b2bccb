@@ -1,0 +1,21 @@
+package main;
+
+import dto.Professor;
+import bo.Professor_BO;
+
+public class Main {
+
+	public static void main(String[] args) {
+		
+		Professor prof = new Professor();
+		Professor_BO profBO = new Professor_BO();
+		
+		prof.setNome_professor("Rodrigo");
+		prof.setCodigo_professor("1324");
+	
+		profBO.inserir(prof);
+
+
+	}
+
+}

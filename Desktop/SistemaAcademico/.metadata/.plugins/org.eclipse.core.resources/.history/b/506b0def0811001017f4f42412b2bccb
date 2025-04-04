@@ -1,0 +1,11 @@
+package bo;
+
+public interface InterfaceBO {
+	
+	public boolean inserir();
+	public boolean excluir();
+	public boolean alterar();
+	public List<T> pesquisarTodos();
+	
+
+}

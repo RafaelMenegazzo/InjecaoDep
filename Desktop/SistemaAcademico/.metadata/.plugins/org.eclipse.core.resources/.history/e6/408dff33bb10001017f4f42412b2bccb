@@ -1,0 +1,16 @@
+package main;
+
+import formatos.Sql;
+import dto.Professor;
+import bo.Professor_BO;
+
+public class Main {
+
+	public static void main(String[] args) {
+	
+		Interface i = new Sql(); 
+		Salvar s = new Salvar(i);
+		s.update();
+	}
+
+}

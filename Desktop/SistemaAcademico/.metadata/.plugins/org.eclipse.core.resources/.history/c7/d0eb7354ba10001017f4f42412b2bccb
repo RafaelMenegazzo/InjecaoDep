@@ -1,0 +1,19 @@
+package formatos;
+
+import bo.Professor_BO;
+import dto.Professor;
+import main.Interface;
+
+public class Sql implements Interface {
+
+	
+	public void enviar() {
+		Professor prof = new Professor("Rodrigo","1234");
+		Professor_BO profBO = new Professor_BO();
+			
+		profBO.inserir(prof);
+		
+	}
+	
+
+}

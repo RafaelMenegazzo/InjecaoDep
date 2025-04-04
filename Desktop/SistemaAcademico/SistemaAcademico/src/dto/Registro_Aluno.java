@@ -1,0 +1,59 @@
+package dto;
+
+import java.util.ArrayList;
+
+public class Registro_Aluno {
+	
+	private int id_registro;
+	private int qtd_faltas;
+	private double media;
+	private ArrayList<Float> notas;
+	private String situacao;
+	
+	public int getId_registro() {
+		return id_registro;
+	}
+	public void setId_registro(int id_registro) {
+		this.id_registro = id_registro;
+	}
+	public int getQtd_faltas() {
+		return qtd_faltas;
+	}
+	public void setQtd_faltas(int qtd_faltas) {
+		this.qtd_faltas = qtd_faltas;
+	}
+	public double getMedia() {
+		return media;
+	}
+	public void setMedia(double media) {
+		this.media = media;
+	}
+	public ArrayList<Float> getNotas() {
+		return notas;
+	}
+	public void setNotas(ArrayList<Float> notas) {
+		this.notas = notas;
+	}
+	public String getSituacao() {
+		return situacao;
+	}
+	public void setSituacao(String situacao) {
+		this.situacao = situacao;
+	}
+	
+	
+	public void add_Falta(Professor professor, int qtd) {
+		
+	}
+	
+	public void add_Nota(Professor professor, float nota) {
+		
+	}
+	
+	public void calcular_media() {
+		
+	}
+	
+	
+
+}

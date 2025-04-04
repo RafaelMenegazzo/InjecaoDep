@@ -1,0 +1,66 @@
+package XML;
+
+import dao.AlunoXMLDAO;
+import dto.Aluno;
+import java.util.Scanner;
+
+public class EscolhaXML {
+
+    public void Escolha() {
+        Scanner scanner = new Scanner(System.in);
+        AlunoXMLDAO alunoXMLDAO = new AlunoXMLDAO();
+
+        while (true) {
+            System.out.println("\n[XML] Escolha uma opção:");
+            System.out.println("1 - Adicionar Aluno");
+            System.out.println("2 - Listar Alunos");
+            System.out.println("3 - Buscar Aluno por Código");
+            System.out.println("4 - Excluir Aluno");
+            System.out.println("5 - Sair");
+            int opcao = scanner.nextInt();
+            scanner.nextLine(); 
+
+            switch (opcao) {
+                case 1:
+                    System.out.print("Código: ");
+                    String codigo = scanner.nextLine();
+                    System.out.print("Nome: ");
+                    String nome = scanner.nextLine();
+                    Aluno aluno = new Aluno(codigo, nome);
+                    alunoXMLDAO.inserir(aluno);
+                    System.out.println("Aluno salvo em XML!");
+                    break;
+
+                case 2:
+                    alunoXMLDAO.listar().forEach(a -> 
+                        System.out.println("Código: " + a.getCod() + ", Nome: " + a.getNome()));
+                    break;
+
+                case 3:
+                    System.out.print("Digite o código do aluno: ");
+                    String codBusca = scanner.nextLine();
+                    Aluno alunoBuscado = alunoXMLDAO.buscar(codBusca);
+                    if (alunoBuscado != null) {
+                        System.out.println("Aluno encontrado: " + alunoBuscado.getNome());
+                    } else {
+                        System.out.println("Aluno não encontrado!");
+                    }
+                    break;
+
+                case 4:
+                    System.out.print("Digite o código do aluno a excluir: ");
+                    String codExcluir = scanner.nextLine();
+                    alunoXMLDAO.excluir(codExcluir);
+                    System.out.println("Aluno removido do XML!");
+                    break;
+
+                case 5:
+                    System.out.println("Saindo do XML...");
+                    return;
+
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+}

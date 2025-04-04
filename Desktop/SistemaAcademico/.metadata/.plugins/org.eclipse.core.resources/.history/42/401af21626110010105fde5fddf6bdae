@@ -1,0 +1,174 @@
+package dao;
+
+import dto.Fase;
+import org.w3c.dom.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FaseXMLDAO {
+	
+	private static final String XML_FILE = "fase.xml";
+
+    // Insere uma nova fase no XML
+    public boolean inserir(Fase fase) {
+        try {
+            File file = new File(XML_FILE);
+            Document doc;
+            Element rootElement;
+
+            if (file.exists()) {
+                doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+                rootElement = doc.getDocumentElement();
+            } else {
+                doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+                rootElement = doc.createElement("Fases");
+                doc.appendChild(rootElement);
+            }
+
+            Element faseElement = doc.createElement("Fase");
+
+            Element idElement = doc.createElement("id_fase");
+            idElement.appendChild(doc.createTextNode(String.valueOf(fase.getId_fase())));
+
+            Element faseNumElement = doc.createElement("fase");
+            faseNumElement.appendChild(doc.createTextNode(String.valueOf(fase.getFase())));
+
+            faseElement.appendChild(idElement);
+            faseElement.appendChild(faseNumElement);
+            rootElement.appendChild(faseElement);
+
+            salvarXML(doc);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Lista todas as fases do XML
+    public List<Fase> pesquisarTodas() {
+        List<Fase> fases = new ArrayList<>();
+        try {
+            File file = new File(XML_FILE);
+            if (!file.exists()) {
+                return fases;
+            }
+
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+            NodeList nodeList = doc.getElementsByTagName("Fase");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    Fase fase = new Fase();
+                    fase.setId_fase(Integer.parseInt(element.getElementsByTagName("id_fase").item(0).getTextContent()));
+                    fase.setFase(Integer.parseInt(element.getElementsByTagName("fase").item(0).getTextContent()));
+                    fases.add(fase);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fases;
+    }
+
+    // Exclui uma fase pelo ID
+    public boolean excluir(Fase fase) {
+        try {
+            File file = new File(XML_FILE);
+            if (!file.exists()) {
+                return false;
+            }
+
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+            NodeList nodeList = doc.getElementsByTagName("Fase");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    if (Integer.parseInt(element.getElementsByTagName("id_fase").item(0).getTextContent()) == fase.getId_fase()) {
+                        element.getParentNode().removeChild(element);
+                        salvarXML(doc);
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Atualiza uma fase no XML
+    public boolean alterar(Fase fase) {
+        try {
+            File file = new File(XML_FILE);
+            if (!file.exists()) {
+                return false;
+            }
+
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+            NodeList nodeList = doc.getElementsByTagName("Fase");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    if (Integer.parseInt(element.getElementsByTagName("id_fase").item(0).getTextContent()) == fase.getId_fase()) {
+                        element.getElementsByTagName("fase").item(0).setTextContent(String.valueOf(fase.getFase()));
+                        salvarXML(doc);
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+   
+    public boolean existe(Fase fase) {
+        try {
+            File file = new File(XML_FILE);
+            if (!file.exists()) {
+                return false;
+            }
+
+            Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file);
+            NodeList nodeList = doc.getElementsByTagName("Fase");
+
+            for (int i = 0; i < nodeList.getLength(); i++) {
+                Node node = nodeList.item(i);
+                if (node.getNodeType() == Node.ELEMENT_NODE) {
+                    Element element = (Element) node;
+                    if (Integer.parseInt(element.getElementsByTagName("id_fase").item(0).getTextContent()) == fase.getId_fase()) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    private void salvarXML(Document doc) throws TransformerException {
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        DOMSource source = new DOMSource(doc);
+        StreamResult result = new StreamResult(new File(XML_FILE));
+        transformer.transform(source, result);
+    }
+	
+
+}

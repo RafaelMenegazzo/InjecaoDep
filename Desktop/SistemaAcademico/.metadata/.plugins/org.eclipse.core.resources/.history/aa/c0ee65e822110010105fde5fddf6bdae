@@ -1,0 +1,10 @@
+/**
+ * 
+ */
+/**
+ * 
+ */
+module SistemaAcademico {
+	requires java.sql;
+	requires org.json;
+}

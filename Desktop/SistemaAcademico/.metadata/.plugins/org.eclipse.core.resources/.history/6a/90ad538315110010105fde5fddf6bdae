@@ -1,0 +1,36 @@
+package main;
+
+import formatos.JSON;
+
+import formatos.Sql;
+import formatos.XML;
+import dto.*;
+import bo.*;
+
+public class Main {
+
+	public static void main(String[] args) {
+		
+		Aluno a = new Aluno();
+		Curso c = new Curso();
+		c.setNome_curso("BCC");
+		c.setFases_do_curso(null);
+		AlunoBO b = new AlunoBO();
+		
+		a.setNome("Eduardo");
+		a.setCod("124");
+		a.setCurso(c);;
+	
+//		Interface i = new Sql(); 
+//		Salvar s = new Salvar(i);
+//		//s.update();
+//		
+//		i = new JSON();
+//		s = new Salvar(i);
+//		s.update();
+//		
+//		i = new XML();
+//		s = new Salvar(i);
+//		s.update();
+	}
+}

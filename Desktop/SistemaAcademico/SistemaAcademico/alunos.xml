@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<alunos>
+            
+    
+    <aluno id="0">
+                        
+        
+        <nome>Rafael</nome>
+                        
+        
+        <codigo>543</codigo>
+                        
+        
+        <curso>BCC</curso>
+                    
+    
+    </aluno>
+        
+    
+    <aluno id="0">
+                
+        <nome>Jorge</nome>
+                
+        <codigo>654</codigo>
+                
+        <curso>Pedagogia</curso>
+            
+    </aluno>
+    
+    <aluno id="0">
+        <nome>jorge</nome>
+        <codigo>765</codigo>
+        <curso>calopsita</curso>
+    </aluno>
+</alunos>

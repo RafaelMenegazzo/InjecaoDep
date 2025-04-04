@@ -1,0 +1,18 @@
+package SQL;
+
+impor
+import dto.Professor;
+import main.Interface;
+
+public class Sql implements Interface {
+
+	public void enviar() {
+		
+		
+			
+		
+		
+	}
+	
+
+}

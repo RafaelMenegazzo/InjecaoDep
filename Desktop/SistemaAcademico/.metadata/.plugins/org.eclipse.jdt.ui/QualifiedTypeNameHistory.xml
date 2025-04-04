@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="conexao.Conexao"/>
+    <fullyQualifiedTypeName name="dao.ProfessorDAO"/>
+    <fullyQualifiedTypeName name="dto.Professor"/>
+    <fullyQualifiedTypeName name="bo.Professor_BO"/>
+    <fullyQualifiedTypeName name="formatos.Sql"/>
+</qualifiedTypeNameHistroy>

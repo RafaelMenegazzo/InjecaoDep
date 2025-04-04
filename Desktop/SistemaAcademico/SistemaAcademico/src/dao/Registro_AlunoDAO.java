@@ -1,0 +1,175 @@
+package dao;
+
+import dto.Registro_Aluno;
+import conexao.Conexao;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Registro_AlunoDAO {
+
+    final String NOMETABELA = "Registro_Aluno";
+
+    public boolean excluir(Registro_Aluno registro) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "DELETE FROM Registro_Aluno WHERE id_registro_aluno = ?;";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, registro.getId_registro());
+            ps.executeUpdate();
+            ps.close();
+            conn.close();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean inserir(Registro_Aluno registro) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "INSERT INTO " + NOMETABELA + " (qtd_faltas, media, situacao) VALUES (?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, registro.getQtd_faltas());
+            ps.setDouble(2, registro.getMedia());
+            ps.setBoolean(3, registro.getSituacao().equalsIgnoreCase("Aprovado"));
+
+            ps.executeUpdate();
+
+            ps.close();
+            conn.close();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean existe(int idRegistro) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "SELECT * FROM " + NOMETABELA + " WHERE id_registro_aluno = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, idRegistro);
+
+            ResultSet rs = ps.executeQuery();
+            boolean exists = rs.next();
+
+            ps.close();
+            rs.close();
+            conn.close();
+
+            return exists;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean atualizar(Registro_Aluno registro) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "UPDATE " + NOMETABELA + " SET qtd_faltas = ?, media = ?, situacao = ? WHERE id_registro_aluno = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+
+            ps.setInt(1, registro.getQtd_faltas());
+            ps.setDouble(2, registro.getMedia());
+            ps.setBoolean(3, registro.getSituacao().equalsIgnoreCase("Aprovado"));
+            ps.setInt(4, registro.getId_registro());
+
+            ps.executeUpdate();
+            ps.close();
+            conn.close();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean remover(int idRegistro) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "DELETE FROM " + NOMETABELA + " WHERE id_registro_aluno = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, idRegistro);
+
+            ps.executeUpdate();
+            ps.close();
+            conn.close();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public Registro_Aluno procurarPorId(int idRegistro) {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "SELECT * FROM " + NOMETABELA + " WHERE id_registro_aluno = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, idRegistro);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Registro_Aluno registro = new Registro_Aluno();
+                registro.setId_registro(rs.getInt("id_registro_aluno"));
+                registro.setQtd_faltas(rs.getInt("qtd_faltas"));
+                registro.setMedia(rs.getDouble("media"));
+                registro.setSituacao(rs.getBoolean("situacao") ? "Aprovado" : "Reprovado");
+
+                ps.close();
+                rs.close();
+                conn.close();
+
+                return registro;
+            } else {
+                ps.close();
+                rs.close();
+                conn.close();
+                return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public List<Registro_Aluno> pesquisarTodos() {
+        try {
+            Connection conn = Conexao.conectar();
+            String sql = "SELECT * FROM " + NOMETABELA;
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
+            List<Registro_Aluno> lista = new ArrayList<>();
+            while (rs.next()) {
+                Registro_Aluno registro = new Registro_Aluno();
+                registro.setId_registro(rs.getInt("id_registro_aluno"));
+                registro.setQtd_faltas(rs.getInt("qtd_faltas"));
+                registro.setMedia(rs.getDouble("media"));
+                registro.setSituacao(rs.getBoolean("situacao") ? "Aprovado" : "Reprovado");
+
+                lista.add(registro);
+            }
+
+            ps.close();
+            rs.close();
+            conn.close();
+            return lista;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
